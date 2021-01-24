@@ -12,6 +12,7 @@ from book_api.biquge_api import *
 from book_api.biquge_2_api import *
 from book_api.shuquge_api import *
 from book_api.miaojiang_api import *
+from book_api.wuyou_book_city_api import *
 
 
 class preview_widget(QWidget):
@@ -34,6 +35,7 @@ class preview_widget(QWidget):
         self.biquge_2_flg = "5atxt"
         self.shuquge_flg = "shuquge"
         self.miaojiang_flg = "miaojianggushi2"
+        self.wuyou_flg = "51shucheng"
 
         print(book_url)
         self.book_url = book_url
@@ -62,6 +64,8 @@ class preview_widget(QWidget):
             self.book_name, self.chapter_url_list = shuquge_get_url_list(self.book_url)
         elif self.miaojiang_flg in self.book_url:
             self.book_name, self.chapter_url_list = miaojiang_get_url_list(self.book_url)
+        elif self.wuyou_flg in self.book_url:
+            self.book_name, self.chapter_url_list = wuyou_get_url_list(self.book_url)
         print(self.book_name)
         # 添加书名
         self.ui.label.setText(self.book_name)
@@ -78,6 +82,8 @@ class preview_widget(QWidget):
             chapter_title, chapter_data = shuquge_get_chapter(self.chapter_url_list[self.chapter_num])
         elif self.miaojiang_flg in self.book_url:
             chapter_title, chapter_data = miaojiang_get_chapter(self.chapter_url_list[self.chapter_num])
+        elif self.wuyou_flg in self.book_url:
+            chapter_title, chapter_data = wuyou_get_chapter(self.chapter_url_list[self.chapter_num])
 
         # print(chapter_title)
         # print(chapter_data)
@@ -151,6 +157,10 @@ class preview_widget(QWidget):
             for url in self.chapter_url_list[self.chapter_num:]:
                 chapter_title, chapter_data = miaojiang_get_chapter(url)
                 miaojiang_down_chapter(self.book_name, chapter_title, chapter_data)
+        elif self.wuyou_flg in self.book_url:
+            for url in self.chapter_url_list[self.chapter_num:]:
+                chapter_title, chapter_data = wuyou_get_chapter(url)
+                wuyou_down_chapter(self.book_name, chapter_title, chapter_data)
 
         # 添加提示
         self.ui.label.setText("下载完成: 《{}》".format(self.book_name))

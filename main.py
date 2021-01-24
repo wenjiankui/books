@@ -25,6 +25,7 @@ from book_api.biquge_api import *
 from book_api.shuquge_api import *
 from book_api.miaojiang_api import *
 from book_api.biquge_2_api import *
+from book_api.wuyou_book_city_api import *
 from preview import *
 
 
@@ -58,11 +59,13 @@ class MainWindow(QMainWindow):
         self.biquge_2_book_list_meesage = []
         self.shuquge_book_list_meesage = []
         self.miaojiang_book_list_meesage = []
+        self.wuyou_book_list_meesage = []
         # 启动搜索标志
         self.biquge_search_flag = 0
         self.biquge_2_search_flag = 0
         self.shuquge_search_flag = 0
         self.miaojiang_search_flag = 0
+        self.wuyou_search_flag = 0
 
         # 开始写入表格标志
         self.up_table_widget_flag = 0
@@ -70,6 +73,7 @@ class MainWindow(QMainWindow):
         self.biquge_2_up_table_flag = 0
         self.shuquge_up_table_flag = 0
         self.miaojiang_up_table_flag = 0
+        self.wuyou_up_table_flag = 0
 
         # 需要更新的table_widget控件名
         self.table_widget_list = []
@@ -79,7 +83,7 @@ class MainWindow(QMainWindow):
 
 
         # 循环初始化每一个table_widget控件
-        tablewidget_list = [self.ui.tableWidget_biquge, self.ui.tableWidget_biquge_2, self.ui.tableWidget_shuquge, self.ui.tableWidget_miaojiang]
+        tablewidget_list = [self.ui.tableWidget_biquge, self.ui.tableWidget_biquge_2, self.ui.tableWidget_shuquge, self.ui.tableWidget_miaojiang, self.ui.tableWidget_wuyou]
         for item in tablewidget_list:
             # 设置4列1行
             item.setColumnCount(4)
@@ -146,6 +150,11 @@ class MainWindow(QMainWindow):
             _thread.start_new_thread(self.miaojiang_search_book, ("miaojiang_search_book", 0))
         except:
             print("Error: 无法启动线程")
+        # 创建一个无忧书城搜索线程
+        try:
+            _thread.start_new_thread(self.wuyou_search_book, ("wuyou_search_book", 0))
+        except:
+            print("Error: 无法启动线程")
 
 
     """
@@ -186,6 +195,10 @@ class MainWindow(QMainWindow):
             book_url = self.miaojiang_book_list_meesage[row]["book_url"]
             book_name = self.miaojiang_book_list_meesage[row]["book_name"] + ' - ' + self.miaojiang_book_list_meesage[row][
                 "book_user"]
+        elif table_name == "tableWidget_wuyou":
+            book_url = self.wuyou_book_list_meesage[row]["book_url"]
+            book_name = self.wuyou_book_list_meesage[row]["book_name"] + ' - ' + self.wuyou_book_list_meesage[row][
+                "book_user"]
         else:
             book_name = ""
             book_url = ""
@@ -225,6 +238,7 @@ class MainWindow(QMainWindow):
         self.biquge_2_up_table_flag = 0
         self.shuquge_up_table_flag = 0
         self.miaojiang_up_table_flag = 0
+        self.wuyou_up_table_flag = 0
 
 
         # 启动搜索标志
@@ -232,6 +246,7 @@ class MainWindow(QMainWindow):
         self.biquge_2_search_flag = 1
         self.shuquge_search_flag = 1
         self.miaojiang_search_flag = 1
+        self.wuyou_search_flag = 1
 
 
     def biquge_search_book(self, name, age):
@@ -274,6 +289,16 @@ class MainWindow(QMainWindow):
                 self.up_table_widget_flag = 1
                 print("苗疆搜索完成")
 
+    def wuyou_search_book(self, name, age):
+        while 1:
+            if self.wuyou_search_flag:
+                search_name = self.ui.lineEdit.text()
+                self.wuyou_book_list_meesage = wuyou_search_api(search_name)
+                self.wuyou_search_flag = 0
+                self.wuyou_up_table_flag = 1
+                self.up_table_widget_flag = 1
+                print("无忧书城搜索完成")
+
 
     """
     根据控件名返回对应的小说列表
@@ -290,6 +315,8 @@ class MainWindow(QMainWindow):
             return self.shuquge_book_list_meesage
         elif table_name == "tableWidget_miaojiang":
             return self.miaojiang_book_list_meesage
+        elif table_name == "tableWidget_wuyou":
+            return self.wuyou_book_list_meesage
         else:
             return ""
 
@@ -299,7 +326,7 @@ class MainWindow(QMainWindow):
         if self.biquge_up_table_flag:
             self.table_widget_list.append(self.ui.tableWidget_biquge)
             self.biquge_up_table_flag = 0
-        if self.biquge_2_up_table_flag:
+        elif self.biquge_2_up_table_flag:
             self.table_widget_list.append(self.ui.tableWidget_biquge_2)
             self.biquge_2_up_table_flag = 0
         elif self.shuquge_up_table_flag:
@@ -308,6 +335,9 @@ class MainWindow(QMainWindow):
         elif self.miaojiang_up_table_flag:
             self.table_widget_list.append(self.ui.tableWidget_miaojiang)
             self.miaojiang_up_table_flag = 0
+        elif self.wuyou_up_table_flag:
+            self.table_widget_list.append(self.ui.tableWidget_wuyou)
+            self.wuyou_up_table_flag = 0
 
 
         # 如果更新table_widget标志和self.table_widget_list列表不为空，则向up_table_widget发送信号
@@ -396,6 +426,7 @@ class MainWindow(QMainWindow):
         self.biquge_2_flg = "5atxt"
         self.shuquge_flg = "shuquge"
         self.miaojiang_flg = "miaojianggushi2"
+        self.wuyou_flg = "51shucheng"
         print(book_name, " : ", book_url)
         # 添加提示
         self.ui.label.setText("正在下载: 《{}》...".format(book_name))
@@ -420,6 +451,11 @@ class MainWindow(QMainWindow):
             for url in url_list:
                 chapter_title, chapter_data = miaojiang_get_chapter(url)
                 miaojiang_down_chapter(book_name, chapter_title, chapter_data)
+        elif self.wuyou_flg in book_url:
+            book_name, url_list = wuyou_get_url_list(book_url)
+            for url in url_list:
+                chapter_title, chapter_data = wuyou_get_chapter(url)
+                wuyou_down_chapter(book_name, chapter_title, chapter_data)
             
         # 添加提示
         self.ui.label.setText("下载完成: 《{}》".format(book_name))

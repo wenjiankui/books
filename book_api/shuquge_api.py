@@ -1,7 +1,6 @@
 """
 小说爬取
-书趣阁，笔趣阁
-苗疆蛊事
+书趣阁
 """
 
 miaojiang = "https://www.miaojianggushi2.com"

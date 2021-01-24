@@ -29,9 +29,9 @@ preview.py
 
 小说内容预览窗口
 
-包含一下内容：
+包含以下内容：
 
-​	1、小说预览串口qt界面调用
+​	1、小说预览窗口qt界面调用
 
 ​	2、小说预览章节跳转
 
@@ -46,6 +46,22 @@ preview.ui（由QT界面生成软件：”designer.exe“ 生成的界面文件�
 preview_ui.py（由 “preview.ui” 文件转化为python文件）
 
 dist 文件夹（编译成功的软件，可执行程序）
+
+book_api文件夹
+
+包含以下内容：
+
+​	1、biquge_api.py：笔趣阁网页小说爬取（http://www.biquge.info/）
+
+​	2、biquge_2_api.py：新版笔趣阁网页小说爬取（https://m.5atxt.com/）
+
+​	3、miaojiang_api.py：苗疆蛊事网页小说爬取（https://www.miaojianggushi2.com/）
+
+​	4、shuquge_api.py：书趣阁网页小说爬取（http://www.shuquge.com/）
+
+​	5、wuyou_book_city_api.py：无忧书城网页小说爬取（https://www.51shucheng.net/）
+
+
 
 
 
